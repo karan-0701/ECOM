@@ -53,10 +53,15 @@ func scanRowIntoUser(rows *sql.Rows) (*types.User, error) {
 	return user, nil
 }
 
-func (s *Store) GetUseByID(email string) (u *types.User, err error) {
-	return
+func (s *Store) CreateUser(user types.User) error {
+	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)", user.FirstName, user.LastName, user.Email, user.Password)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (s *Store) CreateUser(u *types.User) error {
-	return nil
+func (s *Store) GetUserByID(id int) (user *types.User, err error) {
+	return nil, nil
 }
