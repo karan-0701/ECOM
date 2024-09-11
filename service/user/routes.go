@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	utils "github.com/karan-0701/ecom/Utils"
 	"github.com/karan-0701/ecom/service/auth"
@@ -30,13 +31,21 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	// get JSON payload
 	var payload types.RegisteredUserPayload
-	if err := utils.ParseJSON(r, payload); err != nil {
+	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	// validate the payload
+	if err := utils.Validate.Struct(payload); err != nil {
+		error := err.(validator.ValidationErrors)
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid payload %v", error))
+		return
 	}
 	// check if the user exists
 	_, err := h.store.GetUseByEmail(payload.Email)
 	if err == nil {
-		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email exists", payload.Email))
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email %sexists", payload.Email))
 		return
 	}
 	// hash the password
