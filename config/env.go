@@ -3,17 +3,20 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	PublicHost string
-	Port       string
-	DBUser     string
-	DBPassword string
-	DBAddress  string
-	DBName     string
+	PublicHost             string
+	Port                   string
+	DBUser                 string
+	DBPassword             string
+	DBAddress              string
+	DBName                 string
+	JWTExpirationInSeconds int
+	JWTSecret              string
 }
 
 // Global variable used so that the init config is not called everytime
@@ -28,8 +31,10 @@ func initConfig() Config {
 		DBUser:     getEnv("DB_USER", "root"),
 		DBPassword: getEnv("DB_PASSWORD", "mypassword"),
 		// sprintf is used to format the string
-		DBAddress: fmt.Sprintf("%s:%s", getEnv("DB_HOSTS", "127.0.0.1"), getEnv("DB_PORT", "3306")),
-		DBName:    getEnv("DB_NAME", "ecom"),
+		DBAddress:              fmt.Sprintf("%s:%s", getEnv("DB_HOSTS", "127.0.0.1"), getEnv("DB_PORT", "3306")),
+		DBName:                 getEnv("DB_NAME", "ecom"),
+		JWTExpirationInSeconds: getEnvInt("JWT_EXP", 3600*24*7),
+		JWTSecret:              getEnv("JWT_SECRET", "not-secret-secret-anymore?"),
 	}
 }
 
@@ -38,6 +43,17 @@ func initConfig() Config {
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
+	}
+
+	return fallback
+}
+
+func getEnvInt(key string, fallback int) int {
+	if value, ok := os.LookupEnv(key); ok {
+		// convert the key into int to return the value
+		if intValue, err := strconv.Atoi(value); err == nil {
+			return intValue
+		}
 	}
 
 	return fallback
