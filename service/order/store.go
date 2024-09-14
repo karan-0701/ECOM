@@ -2,6 +2,7 @@ package order
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/karan-0701/ecom/types"
 )
@@ -16,14 +17,14 @@ func NewStore(db *sql.DB) *Store {
 
 func (s *Store) CreateOrder(order types.Order) (int, error) {
 
-	res, err := s.db.Exec("INSERT into (userId, total, status, address) VALUES (?, ?, ?, ?)", order.UserID, order.Total, order.Status, order.Address)
+	res, err := s.db.Exec("INSERT INTO orders (userId, total, status, address) VALUES (?, ?, ?, ?)", order.UserID, order.Total, order.Status, order.Address)
 	if err != nil {
 		return 0, err
 	}
 
 	id, err := res.LastInsertId()
 	if err != nil {
-		return 0, nil
+		return 0, fmt.Errorf("failed to get last insert ID: %w", err)
 	}
 
 	return int(id), nil

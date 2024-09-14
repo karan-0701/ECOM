@@ -1,0 +1,50 @@
+.
+├── Makefile
+├── Utils
+│   └── utils.go
+├── bin
+│   └── ecom
+├── cmd
+│   ├── api
+│   │   └── main.go
+│   └── migrate
+│       ├── main.go
+│       └── migrations
+│           ├── 20240911142228_add-user-table.down.sql
+│           ├── 20240911142228_add-user-table.up.sql
+│           ├── 20240911165208_add-product-table.down.sql
+│           ├── 20240911165208_add-product-table.up.sql
+│           ├── 20240911165249_add-orders-table.down.sql
+│           ├── 20240911165249_add-orders-table.up.sql
+│           ├── 20240911165337_add-order-items-table.down.sql
+│           └── 20240911165337_add-order-items-table.up.sql
+├── config
+│   └── env.go
+├── db
+│   └── db.go
+├── directory_structure.txt
+├── go.mod
+├── go.sum
+├── internal
+│   └── api
+│       └── api.go
+├── service
+│   ├── auth
+│   │   ├── jwt.go
+│   │   └── password.go
+│   ├── cart
+│   │   ├── routes.go
+│   │   └── service.go
+│   ├── order
+│   │   └── store.go
+│   ├── product
+│   │   ├── routes.go
+│   │   └── store.go
+│   └── user
+│       ├── routes.go
+│       ├── routes_test.go
+│       └── store.go
+└── types
+    └── types.go
+
+18 directories, 30 files

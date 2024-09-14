@@ -70,8 +70,8 @@ type LoginUserPayload struct {
 }
 
 type CartItem struct {
-	ProductID int `json:"items" validate:"required"`
-	Quantity  int `json:"quantity" validate:"required"`
+	ProductID int `json:"productID" validate:"required,min=1"`
+	Quantity  int `json:"quantity" validate:"required,min=1"`
 }
 
 type CartCheckOutPayload struct {

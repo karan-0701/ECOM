@@ -41,3 +41,20 @@ func WriteError(w http.ResponseWriter, status int, err error) {
 	// }
 	WriteJSON(w, status, map[string]string{"error": err.Error()})
 }
+
+func GetTokenFromRequest(r *http.Request) string {
+	// most JWT Tokens are present in the Authorization header used to extract it
+	tokenAuth := r.Header.Get("Authorization")
+	// some apis allow JWT tokens to be passed as URL query parameter
+	tokenQuery := r.URL.Query().Get("token")
+
+	if tokenAuth != "" {
+		return tokenAuth
+	}
+
+	if tokenQuery != "" {
+		return tokenQuery
+	}
+
+	return ""
+}

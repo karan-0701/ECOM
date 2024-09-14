@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/karan-0701/ecom/service/cart"
+	"github.com/karan-0701/ecom/service/order"
 	"github.com/karan-0701/ecom/service/product"
 	"github.com/karan-0701/ecom/service/user"
 )
@@ -33,6 +35,17 @@ func (s *APIServer) Run() error {
 	productStore := product.NewStore(s.db)
 	productHandler := product.NewHandler(productStore)
 	productHandler.RegisterRoutes(subrouter)
+
+	orderStore := order.NewStore(s.db)
+
+	cartHandler := cart.NewHandler(productStore, orderStore, userStore)
+	cartHandler.RegisterRoutes(subrouter)
+
+	// Serve static files
+	// When a user visits your site (e.g., http://localhost:8080/index.html), the server will look for a file called index.html in the static directory and serve it to the user.
+	// Similarly, if the user requests a file like http://localhost:8080/css/style.css, the server will serve the corresponding style.css file from the static/css/ folder.
+
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
 
 	log.Println("Listening on", s.addr)
 	return http.ListenAndServe(s.addr, router)
